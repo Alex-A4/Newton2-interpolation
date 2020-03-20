@@ -1,9 +1,12 @@
-# alexa4
+# Интерполирование функции методом Ньютона-2
 
-A new Flutter application.
+Лабу сделал Адрианов Алексей ИТ-3, 2020г
 
-## Getting Started
+UI является гибким, но адаптирован под Web сборку 
 
+![image](https://user-images.githubusercontent.com/32712725/77158708-e8c36b00-6ab4-11ea-9de6-eb1587c358ef.png)
+
+## Getting Started with Flutter
 This project is a starting point for a Flutter application.
 
 A few resources to get you started if this is your first Flutter project:
