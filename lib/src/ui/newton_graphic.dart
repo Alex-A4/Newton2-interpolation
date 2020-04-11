@@ -28,6 +28,9 @@ class NewtonGraphic extends StatelessWidget {
 
               List<Point<double>> pointsFx = [];
               List<Point<double>> pointsPn = [];
+              List<Point<double>> pointsFh = [];
+              List<Point<double>> pointsPh = [];
+              List<Point<double>> pointsFP = [];
               List<Point<double>> corners = [
                 Point(pol.A, pol.D),
                 Point(pol.B, pol.C),
@@ -37,8 +40,15 @@ class NewtonGraphic extends StatelessWidget {
                 x = pol.A + px * (pol.B - pol.A) / constraints.maxWidth;
                 final fx = pol.fx(x);
                 final pn = pol.pn(x);
+                final pf = fx - pn;
+                final fh = (pol.fx(x + pol.h) - fx) / pol.h;
+                final ph = (pol.pn(x + pol.h) - pn) / pol.h;
+
                 if (pol.C <= fx && fx <= pol.D) pointsFx.add(Point(x, fx));
-                if (pol.C < pn && pn <= pol.D) pointsPn.add(Point(x, pn));
+                if (pol.C <= pn && pn <= pol.D) pointsPn.add(Point(x, pn));
+                if (pol.C <= pf && pf <= pol.D) pointsFP.add(Point(x, pf));
+                if (pol.C <= fh && fh <= pol.D) pointsFh.add(Point(x, fh));
+                if (pol.C <= ph && ph <= pol.D) pointsPh.add(Point(x, ph));
               }
 
               return chart.LineChart(
@@ -58,6 +68,37 @@ class NewtonGraphic extends StatelessWidget {
                     measureFn: (p, _) => p.y,
                     displayName: 'Pn(x)',
                     seriesColor: chart.Color.fromHex(code: '#42A5F5'),
+                  ),
+                  new chart.Series(
+                    data: corners,
+                    id: '',
+                    domainFn: (p, _) => p.x,
+                    measureFn: (p, _) => p.y,
+                    seriesColor: chart.Color.transparent,
+                  ),
+                  new chart.Series(
+                    data: pointsFP,
+                    id: 'f(x)-Pn(x)',
+                    displayName: 'f(x)-Pn()',
+                    domainFn: (p, _) => p.x,
+                    measureFn: (p, _) => p.y,
+                    seriesColor: chart.Color.fromHex(code: '#DC143C'),
+                  ),
+                  new chart.Series(
+                    data: pointsFh,
+                    id: '(f(x+h)-f(x))/h',
+                    displayName: '(f(x+h)-f(x))/h',
+                    domainFn: (p, _) => p.x,
+                    measureFn: (p, _) => p.y,
+                    seriesColor: chart.Color.fromHex(code: '#FF8C00'),
+                  ),
+                  new chart.Series(
+                    data: pointsPh,
+                    id: '(Pn(x+h)-Pn(x))/h',
+                    displayName: '(Pn(x+h)-Pn(x))/h',
+                    domainFn: (p, _) => p.x,
+                    measureFn: (p, _) => p.y,
+                    seriesColor: chart.Color.fromHex(code: '#8A2BE2'),
                   ),
                   new chart.Series(
                     data: corners,
