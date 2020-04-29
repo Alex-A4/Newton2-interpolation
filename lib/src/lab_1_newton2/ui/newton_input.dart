@@ -14,9 +14,14 @@ class NewtonInput extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<NewtonBloc, NewtonState>(
-      builder: (_, NewtonState state) {
-        if (state is InitialState) {
+    final bloc = BlocProvider.of<NewtonBloc>(context);
+    return StreamBuilder<NewtonState>(
+      stream: bloc.where((s) => s is InitialState || s is InitializedState),
+      builder: (_, snap) {
+        if (!snap.hasData) {
+          return Container();
+        }
+        if (snap.data is InitialState) {
           return Container();
         }
 
@@ -29,21 +34,14 @@ class NewtonInput extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
-                  getRowOfFields(
-                      'A', 'B', BlocProvider.of<NewtonBloc>(context)),
-                  getRowOfFields(
-                      'C', 'D', BlocProvider.of<NewtonBloc>(context)),
-                  getRowOfFields(
-                      'alpha', 'betta', BlocProvider.of<NewtonBloc>(context)),
-                  getRowOfFields(
-                      'delta', 'epsilon', BlocProvider.of<NewtonBloc>(context)),
-                  getRowOfFields(
-                      'mu', 'n', BlocProvider.of<NewtonBloc>(context)),
-                  FieldPopUp(
-                      storage:
-                          BlocProvider.of<NewtonBloc>(context).getField('h')),
+                  getRowOfFields('A', 'B', bloc),
+                  getRowOfFields('C', 'D', bloc),
+                  getRowOfFields('alpha', 'betta', bloc),
+                  getRowOfFields('delta', 'epsilon', bloc),
+                  getRowOfFields('mu', 'n', bloc),
+                  FieldPopUp(storage: bloc.getField('h')),
                   SizedBox(height: 30),
-                  BuildButton(bloc: BlocProvider.of<NewtonBloc>(context)),
+                  BuildButton(bloc: bloc),
                 ],
               ),
             ),
