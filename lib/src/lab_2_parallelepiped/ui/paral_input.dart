@@ -58,7 +58,7 @@ class ParalInput extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
       child: SizedBox(
-        height: 30,
+        height: 40,
         child: Row(
           mainAxisSize: MainAxisSize.max,
           children: <Widget>[
