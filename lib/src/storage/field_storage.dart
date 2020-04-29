@@ -29,6 +29,8 @@ class FieldStorage<T> {
   void changeValue(String value) =>
       _subject.sink.add(parser == null ? value : parser(value));
 
+  void addError(String message) => _subject.sink.addError(message);
+
   void dispose() {
     _subject.close();
   }

@@ -36,23 +36,38 @@ class ParalBloc extends Bloc<ParalEvent, ParalState> {
     }
 
     if (event is BuildGraphicEvent) {
-      polynomial = Polynomial(
-        _storageMap['A'].value,
-        _storageMap['B'].value,
-        _storageMap['C'].value,
-        _storageMap['D'].value,
-        _storageMap['alpha'].value,
-        _storageMap['betta'].value,
-        _storageMap['delta'].value,
-        _storageMap['epsilon'].value,
-        _storageMap['mu'].value,
-        _storageMap['n'].value,
-        _storageMap['a'].value,
-        _storageMap['b'].value,
-        _storageMap['dx'].value,
-        _storageMap['builder'].value,
-      );
-      yield PreparingState();
+      bool hasError = false;
+      if (_storageMap['A'].value >= _storageMap['B'].value) {
+        _storageMap['A'].addError('Поле A не меньше B');
+        hasError = true;
+      }
+      if (_storageMap['C'].value >= _storageMap['D'].value) {
+        _storageMap['C'].addError('Поле C не меньше D');
+        hasError = true;
+      }
+      if (_storageMap['a'].value >= _storageMap['b'].value) {
+        _storageMap['a'].addError('Поле a не меньше b');
+        hasError = true;
+      }
+      if (!hasError) {
+        polynomial = Polynomial(
+          _storageMap['A'].value,
+          _storageMap['B'].value,
+          _storageMap['C'].value,
+          _storageMap['D'].value,
+          _storageMap['alpha'].value,
+          _storageMap['betta'].value,
+          _storageMap['delta'].value,
+          _storageMap['epsilon'].value,
+          _storageMap['mu'].value,
+          _storageMap['n'].value,
+          _storageMap['a'].value,
+          _storageMap['b'].value,
+          _storageMap['dx'].value,
+          _storageMap['builder'].value,
+        );
+        yield PreparingState();
+      }
     }
 
     if (event is CalculatePointsEvent) {
@@ -65,9 +80,9 @@ class ParalBloc extends Bloc<ParalEvent, ParalState> {
 
   void _initStorage() {
     _storageMap['A'] =
-        FieldStorage<double>('A', validate1000range, doubleParser, -100);
+        FieldStorage<double>('A', validate1000range, doubleParser, -10);
     _storageMap['B'] =
-        FieldStorage<double>('B', validate1000range, doubleParser, 100);
+        FieldStorage<double>('B', validate1000range, doubleParser, 10);
     _storageMap['C'] =
         FieldStorage<double>('C', validate1000range, doubleParser, -10);
     _storageMap['D'] =
@@ -86,10 +101,10 @@ class ParalBloc extends Bloc<ParalEvent, ParalState> {
 
     _storageMap['n'] = FieldStorage<int>('n', validate0to100, intParser, 10);
     _storageMap['a'] =
-        FieldStorage<double>('a', validate100range, doubleParser, -5);
+        FieldStorage<double>('a', validate100range, doubleParser, -1);
     _storageMap['b'] =
-        FieldStorage<double>('b', validate100range, doubleParser, 5);
-    _storageMap['dx'] = FieldStorage<double>('dx', null, doubleParser, 0.1);
+        FieldStorage<double>('b', validate100range, doubleParser, 1);
+    _storageMap['dx'] = FieldStorage<double>('dx', null, doubleParser, 0.5);
 
     _storageMap['builder'] =
         FieldStorage<String>('builder', null, null, 'alpha');
@@ -117,7 +132,7 @@ List<Point<double>> calculateGraphic(Polynomial pol) {
       }
       i2 = calculateIntegral(pol, x, 2 * n1);
 
-      if ((i1 - i2).abs() < pol.dx) {
+      if ((1 / 3) * (i1 - i2).abs() < pol.dx) {
         break;
       }
       i1 = i2;
