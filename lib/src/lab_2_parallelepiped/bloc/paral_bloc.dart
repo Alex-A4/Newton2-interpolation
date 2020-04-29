@@ -14,8 +14,8 @@ class ParalBloc extends Bloc<ParalEvent, ParalState> {
 
   FieldStorage getField(String name) => _storageMap[name];
 
-  Stream<bool> get buildButton =>
-      CombineLatestStream(_getStreams(), (values) => true);
+  Stream<bool> get buildButton => CombineLatestStream(
+      _getStreams(), (values) => true && state is! CalculatingState);
 
   Iterable<Stream<dynamic>> _getStreams() {
     final list = <Stream<dynamic>>[];
@@ -50,6 +50,7 @@ class ParalBloc extends Bloc<ParalEvent, ParalState> {
         _storageMap['a'].value,
         _storageMap['b'].value,
         _storageMap['dx'].value,
+        _storageMap['builder'].value,
       );
       yield PreparingState();
     }
@@ -64,9 +65,9 @@ class ParalBloc extends Bloc<ParalEvent, ParalState> {
 
   void _initStorage() {
     _storageMap['A'] =
-        FieldStorage<double>('A', validate1000range, doubleParser, -10);
+        FieldStorage<double>('A', validate1000range, doubleParser, -100);
     _storageMap['B'] =
-        FieldStorage<double>('B', validate1000range, doubleParser, 10);
+        FieldStorage<double>('B', validate1000range, doubleParser, 100);
     _storageMap['C'] =
         FieldStorage<double>('C', validate1000range, doubleParser, -10);
     _storageMap['D'] =
@@ -89,6 +90,9 @@ class ParalBloc extends Bloc<ParalEvent, ParalState> {
     _storageMap['b'] =
         FieldStorage<double>('b', validate100range, doubleParser, 5);
     _storageMap['dx'] = FieldStorage<double>('dx', null, doubleParser, 0.1);
+
+    _storageMap['builder'] =
+        FieldStorage<String>('builder', null, null, 'alpha');
   }
 
   void dispose() {
@@ -96,7 +100,6 @@ class ParalBloc extends Bloc<ParalEvent, ParalState> {
     super.close();
   }
 }
-
 
 List<Point<double>> calculateGraphic(Polynomial pol) {
   List<Point<double>> pointsIntegral = [];
@@ -110,9 +113,9 @@ List<Point<double>> calculateGraphic(Polynomial pol) {
     n1 = pol.n;
     while (true) {
       if (n1 == pol.n) {
-        i1 = pol.integral(x, null, null, null, null, n1);
+        i1 = calculateIntegral(pol, x, n1);
       }
-      i2 = pol.integral(x, null, null, null, null, 2 * n1);
+      i2 = calculateIntegral(pol, x, 2 * n1);
 
       if ((i1 - i2).abs() < pol.dx) {
         break;
@@ -126,4 +129,21 @@ List<Point<double>> calculateGraphic(Polynomial pol) {
     }
   }
   return pointsIntegral;
+}
+
+double calculateIntegral(Polynomial pol, double value, int n) {
+  switch (pol.activeParam) {
+    case 'alpha':
+      return pol.integral(value, null, null, null, null, n);
+    case 'betta':
+      return pol.integral(null, value, null, null, null, n);
+    case 'delta':
+      return pol.integral(null, null, value, null, null, n);
+    case 'epsilon':
+      return pol.integral(null, null, null, value, null, n);
+    case 'mu':
+      return pol.integral(null, null, null, null, value, n);
+    default:
+      return 0;
+  }
 }
