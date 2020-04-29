@@ -195,10 +195,9 @@ class FieldPopUp extends StatelessWidget {
         return PopupMenuButton<double>(
           initialValue: value,
           itemBuilder: (_) => [
-            PopupMenuItem(child: Text('0.0001'), value: 0.0001),
-            PopupMenuItem(child: Text('0.001'), value: 0.001),
-            PopupMenuItem(child: Text('0.01'), value: 0.01),
+            PopupMenuItem(child: Text('0.05'), value: 0.05),
             PopupMenuItem(child: Text('0.1'), value: 0.1),
+            PopupMenuItem(child: Text('0.5'), value: 0.5),
             PopupMenuItem(child: Text('1'), value: 1),
           ],
           child: Card(
