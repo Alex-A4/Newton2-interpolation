@@ -4,6 +4,8 @@ abstract class NewtonState {}
 
 class InitialState extends NewtonState {}
 
+class InitializedState extends NewtonState {}
+
 class CalculatingState extends NewtonState {}
 
 class BuildState extends NewtonState {

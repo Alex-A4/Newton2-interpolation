@@ -14,30 +14,42 @@ class NewtonInput extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: <Widget>[
-        InfoField(),
-        Expanded(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              getRowOfFields('A', 'B', BlocProvider.of<NewtonBloc>(context)),
-              getRowOfFields('C', 'D', BlocProvider.of<NewtonBloc>(context)),
-              getRowOfFields(
-                  'alpha', 'betta', BlocProvider.of<NewtonBloc>(context)),
-              getRowOfFields(
-                  'delta', 'epsilon', BlocProvider.of<NewtonBloc>(context)),
-              getRowOfFields('mu', 'n', BlocProvider.of<NewtonBloc>(context)),
-              FieldPopUp(
-                  storage: BlocProvider.of<NewtonBloc>(context).getField('h')),
-              SizedBox(height: 30),
-              BuildButton(bloc: BlocProvider.of<NewtonBloc>(context)),
-            ],
-          ),
-        ),
-      ],
+    return BlocBuilder<NewtonBloc, NewtonState>(
+      builder: (_, NewtonState state) {
+        if (state is InitialState) {
+          return Container();
+        }
+
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            InfoField(),
+            Expanded(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  getRowOfFields(
+                      'A', 'B', BlocProvider.of<NewtonBloc>(context)),
+                  getRowOfFields(
+                      'C', 'D', BlocProvider.of<NewtonBloc>(context)),
+                  getRowOfFields(
+                      'alpha', 'betta', BlocProvider.of<NewtonBloc>(context)),
+                  getRowOfFields(
+                      'delta', 'epsilon', BlocProvider.of<NewtonBloc>(context)),
+                  getRowOfFields(
+                      'mu', 'n', BlocProvider.of<NewtonBloc>(context)),
+                  FieldPopUp(
+                      storage:
+                          BlocProvider.of<NewtonBloc>(context).getField('h')),
+                  SizedBox(height: 30),
+                  BuildButton(bloc: BlocProvider.of<NewtonBloc>(context)),
+                ],
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 
@@ -91,7 +103,7 @@ class FieldBuilder<T> extends StatelessWidget {
   FieldBuilder({
     Key key,
     @required this.storage,
-  })  : this.controller = TextEditingController(text: '${storage.value}'),
+  })  : this.controller = TextEditingController(text: '${storage.initValue}'),
         super(key: key ?? Key('FieldBuilder-${storage.name}'));
 
   @override
@@ -135,8 +147,9 @@ class FieldPopUp extends StatelessWidget {
       initialData: storage.value,
       stream: storage.valueStream,
       builder: (_, snap) {
+        var value = snap.data;
         return PopupMenuButton<double>(
-          initialValue: storage.value,
+          initialValue: value,
           itemBuilder: (_) => [
             PopupMenuItem(child: Text('0.0001'), value: 0.0001),
             PopupMenuItem(child: Text('0.001'), value: 0.001),

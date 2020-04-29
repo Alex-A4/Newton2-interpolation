@@ -29,6 +29,8 @@ class NewtonBloc extends Bloc<NewtonEvent, NewtonState> {
   Stream<NewtonState> mapEventToState(NewtonEvent event) async* {
     if (event is InitBlocEvent) {
       _initStorage();
+      await Future.delayed(Duration(milliseconds: 300));
+      yield InitializedState();
     }
 
     if (event is BuildGraphicEvent) {
