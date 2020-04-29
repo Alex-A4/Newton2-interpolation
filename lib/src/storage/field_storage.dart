@@ -8,6 +8,7 @@ class FieldStorage<T> {
   final Validator<T> validator;
   final Parser<T> parser;
   final BehaviorSubject<T> _subject;
+  final T initValue;
 
   T get value => _subject.value;
 
@@ -22,7 +23,7 @@ class FieldStorage<T> {
     }));
   }
 
-  FieldStorage(this.name, this.validator, this.parser, T initValue)
+  FieldStorage(this.name, this.validator, this.parser, this.initValue)
       : this._subject = BehaviorSubject.seeded(initValue);
 
   void changeValue(String value) => _subject.sink.add(parser(value));
