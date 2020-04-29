@@ -18,7 +18,7 @@ class ParalInput extends StatelessWidget {
     final bloc = BlocProvider.of<ParalBloc>(context);
 
     return StreamBuilder<ParalState>(
-      stream: bloc,
+      stream: bloc.where((s) => s is InitialState || s is InitializedState),
       builder: (_, snap) {
         if (!snap.hasData) {
           return Container();
@@ -32,7 +32,7 @@ class ParalInput extends StatelessWidget {
             InfoField(),
             Expanded(
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
                   getRowOfFields('A', 'B', bloc),
@@ -42,7 +42,8 @@ class ParalInput extends StatelessWidget {
                   getRowOfFields('mu', 'n', bloc),
                   getRowOfFields('a', 'b', bloc),
                   FieldPopUp(storage: bloc.getField('dx')),
-                  SizedBox(height: 30),
+                  RadioField(storage: bloc.getField('builder')),
+                  SizedBox(height: 15),
                   BuildButton(bloc: bloc),
                 ],
               ),
@@ -56,14 +57,57 @@ class ParalInput extends StatelessWidget {
   Widget getRowOfFields(String left, String right, ParalBloc bloc) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-      child: Row(
-        mainAxisSize: MainAxisSize.max,
-        children: <Widget>[
-          Expanded(child: FieldBuilder(storage: bloc.getField(left))),
-          SizedBox(width: 20),
-          Expanded(child: FieldBuilder(storage: bloc.getField(right))),
-        ],
+      child: SizedBox(
+        height: 30,
+        child: Row(
+          mainAxisSize: MainAxisSize.max,
+          children: <Widget>[
+            Expanded(child: FieldBuilder(storage: bloc.getField(left))),
+            SizedBox(width: 20),
+            Expanded(child: FieldBuilder(storage: bloc.getField(right))),
+          ],
+        ),
       ),
+    );
+  }
+}
+
+class RadioField extends StatelessWidget {
+  final FieldStorage<String> storage;
+
+  RadioField({Key key, @required this.storage}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<String>(
+      initialData: storage.initValue,
+      stream: storage.valueStream,
+      builder: (_, snap) {
+        return Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            getRadio('alpha', snap.data),
+            getRadio('betta', snap.data),
+            getRadio('delta', snap.data),
+            getRadio('epsilon', snap.data),
+            getRadio('mu', snap.data),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget getRadio(String value, String current) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Radio(
+          value: value,
+          groupValue: current,
+          onChanged: storage.changeValue,
+        ),
+        Text(value),
+      ],
     );
   }
 }
