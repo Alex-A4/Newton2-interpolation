@@ -1,4 +1,7 @@
+import 'dart:math';
+
 import 'package:bloc/bloc.dart';
+import 'package:flutter/foundation.dart';
 import 'package:newton_2/src/lab_2_parallelepiped/models/polynom.dart';
 import 'package:newton_2/src/scripts/scripts.dart';
 import 'package:newton_2/src/storage/field_storage.dart';
@@ -33,7 +36,6 @@ class ParalBloc extends Bloc<ParalEvent, ParalState> {
     }
 
     if (event is BuildGraphicEvent) {
-      yield CalculatingState();
       polynomial = Polynomial(
         _storageMap['A'].value,
         _storageMap['B'].value,
@@ -49,7 +51,14 @@ class ParalBloc extends Bloc<ParalEvent, ParalState> {
         _storageMap['b'].value,
         _storageMap['dx'].value,
       );
-      yield BuildState(polynomial);
+      yield PreparingState();
+    }
+
+    if (event is CalculatePointsEvent) {
+      polynomial.width = event.width;
+      yield CalculatingState();
+      var points = await compute(calculateGraphic, polynomial);
+      yield ShowState(points, polynomial);
     }
   }
 
@@ -86,4 +95,35 @@ class ParalBloc extends Bloc<ParalEvent, ParalState> {
     _storageMap.forEach((key, value) => value.dispose());
     super.close();
   }
+}
+
+
+List<Point<double>> calculateGraphic(Polynomial pol) {
+  List<Point<double>> pointsIntegral = [];
+  double px;
+  double x;
+  int n1;
+  double i1, i2;
+
+  for (px = 0; px <= pol.width; px++) {
+    x = pol.A + px * (pol.B - pol.A) / pol.width;
+    n1 = pol.n;
+    while (true) {
+      if (n1 == pol.n) {
+        i1 = pol.integral(x, null, null, null, null, n1);
+      }
+      i2 = pol.integral(x, null, null, null, null, 2 * n1);
+
+      if ((i1 - i2).abs() < pol.dx) {
+        break;
+      }
+      i1 = i2;
+      n1 = 2 * n1;
+    }
+
+    if (pol.C <= i2 && i2 <= pol.D) {
+      pointsIntegral.add(Point(px, i2));
+    }
+  }
+  return pointsIntegral;
 }

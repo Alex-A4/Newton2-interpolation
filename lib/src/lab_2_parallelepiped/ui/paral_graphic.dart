@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -13,50 +14,34 @@ class ParalGraphic extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // ignore: close_sinks
+    final bloc = BlocProvider.of<ParalBloc>(context);
+
     return LayoutBuilder(
       key: Key('ParalGraphicLayout'),
       builder: (_, constraints) {
         return BlocBuilder<ParalBloc, ParalState>(
           key: Key('ParalGraphicBlocBuilder'),
           builder: (_, state) {
-            if (state is CalculatingState)
+            if (state is CalculatingState) {
               return Center(child: CircularProgressIndicator());
-            if (state is BuildState) {
-              final pol = state.polynomial;
-              double step = (pol.B - pol.A) / constraints.maxWidth;
-              double px;
-              int n1;
-              double i1, i2;
+            }
+            if (state is PreparingState) {
+              WidgetsBinding.instance.addPostFrameCallback(
+                  (_) => bloc.add(CalculatePointsEvent(constraints.maxWidth)));
+              return Center(child: CircularProgressIndicator());
+            }
 
-              List<Point<double>> pointsIntegral = [];
+            if (state is ShowState) {
               List<Point<double>> corners = [
-                Point(pol.A, pol.D),
-                Point(pol.B, pol.C),
+                Point(state.pol.A, state.pol.D),
+                Point(state.pol.B, state.pol.C),
               ];
-
-              for (px = pol.A; px <= pol.B; px += step) {
-                n1 = pol.n;
-                while (true) {
-                  if (n1 == pol.n) {
-                    i1 = pol.integral(px, null, null, null, null, n1);
-                  }
-                  i2 = pol.integral(px, null, null, null, null, 2 * n1);
-
-                  if ((i1 - i2).abs() < pol.dx) {
-                    break;
-                  }
-                  i1 = i2;
-                  n1 = 2 * n1;
-                }
-
-                if (pol.C <= i2 && i2 <= pol.D)
-                  pointsIntegral.add(Point(px, i2));
-              }
 
               return chart.LineChart(
                 <chart.Series<Point<double>, double>>[
                   new chart.Series(
-                    data: pointsIntegral,
+                    data: state.points,
                     id: 'Integral',
                     domainFn: (p, _) => p.x,
                     measureFn: (p, _) => p.y,
