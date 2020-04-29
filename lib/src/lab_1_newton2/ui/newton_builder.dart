@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:newton_2/src/ui/newton_graphic.dart';
-
-import 'package:newton_2/src/ui/newton_input.dart';
+import 'package:newton_2/src/lab_1_newton2/ui/newton_graphic.dart';
+import 'package:newton_2/src/lab_1_newton2/ui/newton_input.dart';
 
 class NewtonBuilder extends StatelessWidget {
   NewtonBuilder({Key key}) : super(key: key);

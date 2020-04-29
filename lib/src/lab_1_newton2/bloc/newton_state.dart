@@ -1,4 +1,4 @@
-import 'package:newton_2/src/models/polynom.dart';
+import 'package:newton_2/src/lab_1_newton2/models/polynom.dart';
 
 abstract class NewtonState {}
 

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:newton_2/src/bloc/newton.dart';
+import 'package:newton_2/src/lab_1_newton2/bloc/newton.dart';
 import 'package:newton_2/src/storage/field_storage.dart';
 
 /// Виджет для ввода значений полинома по их названиям.
@@ -180,6 +180,7 @@ class InfoField extends StatelessWidget {
       child: Padding(
         padding: EdgeInsets.all(10),
         child: Text(
+          'Лаба №1\n'
           'α * sin(β * x) + δ * cos(ε / (x - μ)^2)\n'
           '®Адрианов Алексей ИТ-31, 2020',
           style: TextStyle(fontSize: 18, fontStyle: FontStyle.italic),

@@ -1,10 +1,10 @@
 import 'package:bloc/bloc.dart';
-import 'package:newton_2/src/bloc/newton_event.dart';
-import 'package:newton_2/src/bloc/newton_state.dart';
-import 'package:newton_2/src/models/polynom.dart';
-import '../scripts/scripts.dart';
+import 'package:newton_2/src/lab_1_newton2/models/polynom.dart';
+import 'package:newton_2/src/scripts/scripts.dart';
 import 'package:newton_2/src/storage/field_storage.dart';
 import 'package:rxdart/rxdart.dart';
+
+import 'newton.dart';
 
 class NewtonBloc extends Bloc<NewtonEvent, NewtonState> {
   final _storageMap = <String, FieldStorage>{};

@@ -2,9 +2,9 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:newton_2/src/bloc/newton.dart';
 
 import 'package:charts_flutter/flutter.dart' as chart;
+import 'package:newton_2/src/lab_1_newton2/bloc/newton.dart';
 
 /// Виджет для построения графика.
 /// Подписывается на поток состояний блока и рисует два графика Pn(x) и f(x)

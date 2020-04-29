@@ -49,16 +49,15 @@ class Polynomial {
   }
 
   double fx(double x) {
-    final divider = pow((x - mu), 2);
-    return alpha * sin(betta * x) +
-        delta * cos(epsilon / divider == 0 ? 1 : divider);
+    var divider = pow((x - mu), 2);
+    divider = divider < 0.00001 ? 0.00001 : divider;
+    return alpha * sin(betta * x) + delta * cos(epsilon / divider);
   }
 
   void printDy() {
-    for(int i = 0; i < dy.length; i++) {
+    for (int i = 0; i < dy.length; i++) {
       var str = '';
-      for(int j = 0; j < dy[i].length; j++)
-        str += '${dy[i][j]} ';
+      for (int j = 0; j < dy[i].length; j++) str += '${dy[i][j]} ';
       print(str);
     }
   }
