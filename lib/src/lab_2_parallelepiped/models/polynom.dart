@@ -25,15 +25,14 @@ class Polynomial {
         (del ?? delta) * cos((eps ?? epsilon) / divider);
   }
 
-  double integral(double al, double bet, double del, double eps, double m, int n1) {
+  double integral(
+      double al, double bet, double del, double eps, double m, int n1) {
     double h = (b - a) / n1;
     double rez = 0;
     rez = (fx(a, al, bet, del, eps, m) + fx(b, al, bet, del, eps, m)) / 2;
-    for (double x = a + h; x < b; x += h) rez += fx(x, al, bet, del, eps, m);
     for (double x = a; x < b; x += h)
       rez += 2 * fx((x + x + h) / 2, al, bet, del, eps, m);
-    rez *= (h / 3);
-    return rez;
+    return rez * h;
   }
 
   @override
