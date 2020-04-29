@@ -11,6 +11,8 @@ class Polynomial {
 
   final double dx;
 
+  double width;
+
   Polynomial(this.A, this.B, this.C, this.D, this.alpha, this.betta, this.delta,
       this.epsilon, this.mu, this.n, this.a, this.b, this.dx);
 
