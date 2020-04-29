@@ -26,7 +26,8 @@ class FieldStorage<T> {
   FieldStorage(this.name, this.validator, this.parser, this.initValue)
       : this._subject = BehaviorSubject.seeded(initValue);
 
-  void changeValue(String value) => _subject.sink.add(parser(value));
+  void changeValue(String value) =>
+      _subject.sink.add(parser == null ? value : parser(value));
 
   void dispose() {
     _subject.close();
