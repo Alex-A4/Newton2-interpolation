@@ -29,6 +29,7 @@ class ParalBloc extends Bloc<ParalEvent, ParalState> {
   Stream<ParalState> mapEventToState(ParalEvent event) async* {
     if (event is InitBlocEvent) {
       _initStorage();
+      yield InitializedState();
     }
 
     if (event is BuildGraphicEvent) {
@@ -75,7 +76,7 @@ class ParalBloc extends Bloc<ParalEvent, ParalState> {
 
     _storageMap['n'] = FieldStorage<int>('n', validate0to100, intParser, 10);
     _storageMap['a'] =
-        FieldStorage<double>('a', validate100range, doubleParser, 5);
+        FieldStorage<double>('a', validate100range, doubleParser, -5);
     _storageMap['b'] =
         FieldStorage<double>('b', validate100range, doubleParser, 5);
     _storageMap['dx'] = FieldStorage<double>('dx', null, doubleParser, 0.1);

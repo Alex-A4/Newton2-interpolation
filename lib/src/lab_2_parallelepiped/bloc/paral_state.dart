@@ -4,6 +4,8 @@ abstract class ParalState {}
 
 class InitialState extends ParalState {}
 
+class InitializedState extends ParalState {}
+
 class CalculatingState extends ParalState {}
 
 class BuildState extends ParalState {

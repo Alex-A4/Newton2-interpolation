@@ -14,31 +14,42 @@ class ParalInput extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: <Widget>[
-        InfoField(),
-        Expanded(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              getRowOfFields('A', 'B', BlocProvider.of<ParalBloc>(context)),
-              getRowOfFields('C', 'D', BlocProvider.of<ParalBloc>(context)),
-              getRowOfFields(
-                  'alpha', 'betta', BlocProvider.of<ParalBloc>(context)),
-              getRowOfFields(
-                  'delta', 'epsilon', BlocProvider.of<ParalBloc>(context)),
-              getRowOfFields('mu', 'n', BlocProvider.of<ParalBloc>(context)),
-              getRowOfFields('a', 'b', BlocProvider.of<ParalBloc>(context)),
-              FieldPopUp(
-                  storage: BlocProvider.of<ParalBloc>(context).getField('dx')),
-              SizedBox(height: 30),
-              BuildButton(bloc: BlocProvider.of<ParalBloc>(context)),
-            ],
-          ),
-        ),
-      ],
+    // ignore: close_sinks
+    final bloc = BlocProvider.of<ParalBloc>(context);
+
+    return StreamBuilder<ParalState>(
+      stream: bloc,
+      builder: (_, snap) {
+        if (!snap.hasData) {
+          return Container();
+        }
+        if (snap.data is InitialState) {
+          return Container();
+        }
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            InfoField(),
+            Expanded(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  getRowOfFields('A', 'B', bloc),
+                  getRowOfFields('C', 'D', bloc),
+                  getRowOfFields('alpha', 'betta', bloc),
+                  getRowOfFields('delta', 'epsilon', bloc),
+                  getRowOfFields('mu', 'n', bloc),
+                  getRowOfFields('a', 'b', bloc),
+                  FieldPopUp(storage: bloc.getField('dx')),
+                  SizedBox(height: 30),
+                  BuildButton(bloc: bloc),
+                ],
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 
@@ -92,7 +103,7 @@ class FieldBuilder<T> extends StatelessWidget {
   FieldBuilder({
     Key key,
     @required this.storage,
-  })  : this.controller = TextEditingController(text: '${storage.value}'),
+  })  : this.controller = TextEditingController(text: '${storage.initValue}'),
         super(key: key ?? Key('FieldBuilder-${storage.name}'));
 
   @override
@@ -133,11 +144,12 @@ class FieldPopUp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<double>(
-      initialData: storage.value,
+      initialData: storage.initValue,
       stream: storage.valueStream,
       builder: (_, snap) {
+        var value = snap.data;
         return PopupMenuButton<double>(
-          initialValue: storage.value,
+          initialValue: value,
           itemBuilder: (_) => [
             PopupMenuItem(child: Text('0.0001'), value: 0.0001),
             PopupMenuItem(child: Text('0.001'), value: 0.001),

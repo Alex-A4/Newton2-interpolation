@@ -38,9 +38,9 @@ class ParalGraphic extends StatelessWidget {
                 n1 = pol.n;
                 while (true) {
                   if (n1 == pol.n) {
-                    i1 = pol.integral(null, null, null, null, null, n1);
+                    i1 = pol.integral(px, null, null, null, null, n1);
                   }
-                  i2 = pol.integral(null, null, null, null, null, 2 * n1);
+                  i2 = pol.integral(px, null, null, null, null, 2 * n1);
 
                   if ((i1 - i2).abs() < pol.dx) {
                     break;
